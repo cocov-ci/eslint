@@ -232,7 +232,7 @@ func errLockFileNotFound() error {
 	msg := fmt.Sprintf("lock file not found. supported are: %s",
 		strings.Join(mgrs, ", "))
 
-	msg = strings.TrimSuffix(msg, " ")
+	msg = strings.TrimSpace(msg)
 	msg = msg + "."
 
 	return fmt.Errorf(msg)
