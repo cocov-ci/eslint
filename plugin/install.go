@@ -58,7 +58,7 @@ func installNode(ctx cocov.Context, exec Exec) error {
 		return err
 	}
 
-	binPath, err := unzip(ctx, exec, zip)
+	binPath, err := untar(ctx, exec, zip)
 	if err != nil {
 		return err
 	}
@@ -181,7 +181,7 @@ func downloadNode(ctx cocov.Context, url string) (string, error) {
 	return tgzPath, nil
 }
 
-func unzip(ctx cocov.Context, e Exec, filename string) (string, error) {
+func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
 	if err := os.Mkdir(nodePath, os.ModePerm); err != nil {
 		ctx.L().Error("error creating directory",
 			zap.String("path", nodePath),
