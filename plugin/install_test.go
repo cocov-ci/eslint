@@ -24,7 +24,7 @@ func TestFindNodeVersion(t *testing.T) {
 
 		_, err := findNodeVersion(helper.ctx)
 		assert.Error(t, err)
-		require.EqualError(t, err, errNoPkgJson().Error())
+		require.EqualError(t, err, errNoPkgJson.Error())
 	})
 
 	t.Run("Failed to unmarshall package.json", func(t *testing.T) {
@@ -53,7 +53,7 @@ func TestFindNodeVersion(t *testing.T) {
 
 		_, err = findNodeVersion(helper.ctx)
 		assert.Error(t, err)
-		require.EqualError(t, err, errNoVersionFound().Error())
+		require.EqualError(t, err, errNoVersionFound.Error())
 	})
 
 	t.Run("Works as expected with engine field", func(t *testing.T) {

@@ -76,7 +76,7 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			ctx.L().Error("package.json not found", zap.Error(err))
-			return "", errNoPkgJson()
+			return "", errNoPkgJson
 		}
 
 		ctx.L().Error("failed to read package.json", zap.Error(err))
@@ -102,9 +102,8 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 	engineVersion := pkg.Engine.Node
 	var v string
 	if enginesVersion == "" && engineVersion == "" {
-		err = errNoVersionFound()
-		ctx.L().Error(err.Error())
-		return "", err
+		ctx.L().Error(errNoVersionFound.Error())
+		return "", errNoVersionFound
 	}
 
 	if enginesVersion != "" {
@@ -249,10 +248,5 @@ func downloadURL(version *semver.Version) string {
 		strVersion, strVersion)
 }
 
-func errNoVersionFound() error {
-	return errors.New("failed to determine node version using package.json")
-}
-
-func errNoPkgJson() error {
-	return errors.New("package.json not found")
-}
+var errNoPkgJson = errors.New("package.json not found")
+var errNoVersionFound = errors.New("failed to determine node version using package.json")
