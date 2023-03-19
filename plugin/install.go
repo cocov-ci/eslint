@@ -190,7 +190,7 @@ func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
 		return "", err
 	}
 
-	args := []string{"zxvf", filename, "-C", nodePath}
+	args := []string{"zxf", filename, "-C", nodePath}
 	if _, err := e.Exec("tar", args, nil); err != nil {
 		ctx.L().Error("error extracting downloaded file", zap.Error(err))
 		return "", err
