@@ -1,0 +1,14 @@
+version: "0.1.alpha"
+
+checks:
+  - plugin: cocov/golangci-lint:v0.1
+    envs:
+      GOPRIVATE: github.com/cocov-ci
+
+  - plugin: cocov/staticcheck:v0.1
+    envs:
+      GOPRIVATE: github.com/cocov-ci
+
+  - plugin: cocov/revive:v0.1
+    envs:
+      GOPRIVATE: github.com/cocov-ci

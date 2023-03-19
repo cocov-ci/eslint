@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if ! which mockgen 1>&2 > /dev/null; then
+  echo "Seems like gomock is not installed. Do you wish to proceed with the installation?[y/n]"
+  read -r proceed
+  if [ "$proceed" = "y" ]; then
+    go install github.com/golang/mock/mockgen@v1.6.0
+  else
+    echo "Please refer to gomock for more details: https://github.com/golang/mock"
+    exit 1
+  fi
+fi
+
+go get -u github.com/golang/mock/mockgen/model
+
+rm -rfv mocks
+mkdir -p mocks
+# shellcheck disable=SC2164
+
+mockgen -package="mocks" -source="plugin/iface.go" > "mocks/iface.go"
+mockgen -package="mocks" github.com/cocov-ci/go-plugin-kit/cocov Context > mocks/context.go

@@ -1,0 +1,25 @@
+name: Test
+
+on:
+  push:
+
+jobs:
+  Test:
+    name: Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up Go 1.19
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19.4
+
+      - name: Grant access to private Go Modules
+        run: git config --global url."https://oauth2:${{ secrets.GO_SDK_CLONE_TOKEN }}@github.com/".insteadOf "https://github.com/"
+
+      - name: Check out to repository
+        uses: actions/checkout@v2
+
+      - name: Run tests
+        run: | 
+          script/test
