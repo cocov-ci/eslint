@@ -2,8 +2,6 @@ package plugin
 
 import (
 	"encoding/json"
-	"time"
-
 	"github.com/cocov-ci/go-plugin-kit/cocov"
 	"go.uber.org/zap"
 )

@@ -11,8 +11,9 @@ import (
 
 func TestRestoreNodeModules(t *testing.T) {
 	wd := "workdir"
+	np := "node-path"
 	manager := yarn
-	opts := &cocov.ExecOpts{Workdir: wd}
+	opts := &cocov.ExecOpts{Workdir: wd, Env: map[string]string{"PATH": np}}
 	t.Run("Fails to restore node modules", func(t *testing.T) {
 		helper := newTestHelper(t)
 
@@ -25,7 +26,7 @@ func TestRestoreNodeModules(t *testing.T) {
 			Exec2(manager, []string{"install"}, opts).
 			Return(stdOut, stdErr, boom)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager)
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, np)
 		require.Error(t, err)
 	})
 
@@ -37,15 +38,16 @@ func TestRestoreNodeModules(t *testing.T) {
 			Exec2(manager, []string{"install"}, opts).
 			Return(nil, nil, nil)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager)
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, np)
 		require.NoError(t, err)
 	})
 }
 
 func TestRunEslint(t *testing.T) {
 	wd := "workdir"
+	np := "node-path"
 	manager := yarn
-	opts := &cocov.ExecOpts{Workdir: wd}
+	opts := &cocov.ExecOpts{Workdir: wd, Env: map[string]string{"PATH": np}}
 	t.Run("Fails running eslint", func(t *testing.T) {
 		helper := newTestHelper(t)
 
@@ -59,7 +61,7 @@ func TestRunEslint(t *testing.T) {
 			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
 			Return(stdOut, stdErr, boom)
 
-		_, err := runEslint(helper.ctx, helper.exec, manager)
+		_, err := runEslint(helper.ctx, helper.exec, manager, np)
 		require.Error(t, err)
 	})
 
@@ -75,7 +77,7 @@ func TestRunEslint(t *testing.T) {
 			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
 			Return(stdOut, stdErr, nil)
 
-		_, err := runEslint(helper.ctx, helper.exec, manager)
+		_, err := runEslint(helper.ctx, helper.exec, manager, np)
 		require.Error(t, err)
 		assert.ErrorContains(t, err, "json")
 	})
@@ -91,7 +93,7 @@ func TestRunEslint(t *testing.T) {
 			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
 			Return(stdOut, nil, nil)
 
-		res, err := runEslint(helper.ctx, helper.exec, manager)
+		res, err := runEslint(helper.ctx, helper.exec, manager, np)
 		require.NoError(t, err)
 		assert.NotNil(t, res)
 		assert.Len(t, res, 1)
