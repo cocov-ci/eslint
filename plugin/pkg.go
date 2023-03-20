@@ -20,7 +20,7 @@ var managers = map[string]string{
 	"yarn.lock":         yarn,
 }
 
-func installPkgManager(ctx cocov.Context, e Exec) (string, error) {
+func installPkgManager(ctx cocov.Context, e Exec, nodePath string) (string, error) {
 	mgr, err := findLockFile(ctx)
 	if err != nil {
 		return "", err
@@ -28,7 +28,8 @@ func installPkgManager(ctx cocov.Context, e Exec) (string, error) {
 
 	ctx.L().Info(fmt.Sprintf("Using %s as package manager", mgr))
 
-	_, err = e.Exec(npm, []string{"install", "-g", mgr}, nil)
+	opts := &cocov.ExecOpts{Env: map[string]string{"PATH": nodePath}}
+	_, err = e.Exec(npm, []string{"install", "-g", mgr}, opts)
 	if err != nil {
 		ctx.L().Error("failed to install manager", zap.Error(err))
 		return "", err
