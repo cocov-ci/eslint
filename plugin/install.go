@@ -17,7 +17,6 @@ import (
 const (
 	nodeIndex = "https://nodejs.org/dist/index.json"
 	nodePath  = "/cocov/node"
-	userHome  = "/cocov"
 	pkgJson   = "package.json"
 )
 
@@ -31,43 +30,44 @@ type versionIndex struct {
 	versions []versionInfo
 }
 
-func installNode(ctx cocov.Context, exec Exec) error {
+func installNode(ctx cocov.Context, exec Exec) (string, error) {
 	version, err := findNodeVersion(ctx)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	consts, err := determineVersionConstraints(version)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	index, err := getNodeVersionIndex(ctx, nodeIndex)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	availableVersion, err := findViableVersion(ctx, version, consts, index)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	url := downloadURL(availableVersion)
 	zip, err := downloadNode(ctx, url)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	binPath, err := untar(ctx, exec, zip)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	if err = exportNodePath(ctx, binPath); err != nil {
-		return err
+	np, err := exportNodePath(ctx, binPath)
+	if err != nil {
+		return "", err
 	}
 
-	return nil
+	return np, nil
 }
 
 func findNodeVersion(ctx cocov.Context) (string, error) {
@@ -211,16 +211,16 @@ func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
 	return binPath, nil
 }
 
-func exportNodePath(ctx cocov.Context, nodePath string) error {
+func exportNodePath(ctx cocov.Context, nodePath string) (string, error) {
 	p := os.Getenv("PATH")
 	p = fmt.Sprintf("%s:%s", nodePath, p)
 
 	if err := os.Setenv("PATH", p); err != nil {
 		ctx.L().Error("failed to set PATH", zap.Error(err))
-		return err
+		return "", err
 	}
 
-	return nil
+	return nodePath, nil
 }
 
 func errLockFileNotFound() error {
