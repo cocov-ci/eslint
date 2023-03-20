@@ -21,8 +21,6 @@ func restoreNodeModules(ctx cocov.Context, e Exec, manager, nodePath string) err
 		return err
 	}
 
-	dur := time.Since(start).Seconds()
-	ctx.L().Info("yarn install succeeded", zap.Float64("total seconds", dur))
 	return nil
 }
 
