@@ -56,23 +56,7 @@ func TestFindNodeVersion(t *testing.T) {
 		require.EqualError(t, err, errNoVersionFound.Error())
 	})
 
-	t.Run("Works as expected with engine field", func(t *testing.T) {
-		data := []byte("{\"engine\": {\"node\": \"v12.x\"}}")
-		err := os.WriteFile(pkgJsonPath, data, os.ModePerm)
-		require.NoError(t, err)
-
-		t.Cleanup(func() { _ = os.Remove(pkgJsonPath) })
-
-		helper := newTestHelper(t)
-
-		helper.ctx.EXPECT().Workdir().Return(fixtures)
-
-		version, err := findNodeVersion(helper.ctx)
-		assert.NoError(t, err)
-		assert.Equal(t, version, ver)
-	})
-
-	t.Run("Works as expected with engines field", func(t *testing.T) {
+	t.Run("Works as expected", func(t *testing.T) {
 		data := []byte("{\"engines\": {\"node\": \"v12.x\"}}")
 		err := os.WriteFile(pkgJsonPath, data, os.ModePerm)
 		require.NoError(t, err)

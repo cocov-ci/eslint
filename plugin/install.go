@@ -87,10 +87,6 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 		Engines struct {
 			Node string `json:"node"`
 		} `json:"engines"`
-
-		Engine struct {
-			Node string `json:"node"`
-		} `json:"engine"`
 	}{}
 
 	if err = json.Unmarshal(f, &pkg); err != nil {
@@ -99,21 +95,12 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 	}
 
 	enginesVersion := pkg.Engines.Node
-	engineVersion := pkg.Engine.Node
-	var v string
-	if enginesVersion == "" && engineVersion == "" {
+	if enginesVersion == "" {
 		ctx.L().Error(errNoVersionFound.Error())
 		return "", errNoVersionFound
 	}
 
-	if enginesVersion != "" {
-		v = enginesVersion
-	} else {
-		v = engineVersion
-	}
-
-	ctx.L().Info("found constraint", zap.String("version", v))
-	return v, nil
+	return enginesVersion, nil
 }
 
 func determineVersionConstraints(version string) (constraints, error) {
