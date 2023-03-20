@@ -8,10 +8,9 @@ import (
 	"go.uber.org/zap"
 )
 
-func restoreNodeModules(ctx cocov.Context, e Exec, manager string) error {
-	ctx.L().Info("installing", zap.String("manager", manager))
-	opts := &cocov.ExecOpts{Workdir: ctx.Workdir()}
-	start := time.Now()
+func restoreNodeModules(ctx cocov.Context, e Exec, manager, nodePath string) error {
+	envs := map[string]string{"PATH": nodePath}
+	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
 	stdOut, stdErr, err := e.Exec2(manager, []string{"install"}, opts)
 	if err != nil {
 		ctx.L().Error("error restoring node modules",
