@@ -14,21 +14,21 @@ func Run(ctx cocov.Context) error {
 
 func run(ctx cocov.Context) ([]result, error) {
 	exec := defaultExec()
-	err := installNode(ctx, exec)
+	np, err := installNode(ctx, exec)
 	if err != nil {
 		return nil, err
 	}
 
-	mgr, err := installPkgManager(ctx, exec)
+	mgr, err := installPkgManager(ctx, exec, np)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = restoreNodeModules(ctx, exec, mgr); err != nil {
+	if err = restoreNodeModules(ctx, exec, mgr, ""); err != nil {
 		return nil, err
 	}
 
-	res, err := runEslint(ctx, exec, mgr)
+	res, err := runEslint(ctx, exec, mgr, "")
 	if err != nil {
 		return nil, err
 	}
