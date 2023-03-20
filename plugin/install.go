@@ -151,21 +151,22 @@ func findViableVersion(ctx cocov.Context, base string, c constraints, index *ver
 
 func downloadNode(ctx cocov.Context, url string) (string, error) {
 	fileName := "node.tar.gz"
+
 	ctx.L().Info("downloading node", zap.String("url", url))
 	resp, err := grequests.Get(url, nil)
 	if err != nil {
 		ctx.L().Error("error downloading node", zap.Error(err))
 		return "", err
-
 	}
 
-	tgzPath := filepath.Join(userHome, fileName)
-	if err = os.WriteFile(tgzPath, resp.Bytes(), os.ModePerm); err != nil {
-		ctx.L().Error("error writing downloaded file", zap.Error(err))
+	defer resp.Close()
+
+	if err = resp.DownloadToFile(fileName); err != nil {
+		ctx.L().Error("error writing downloaded node to file", zap.Error(err))
 		return "", err
 	}
 
-	return tgzPath, nil
+	return filepath.Join(ctx.Workdir(), fileName), nil
 }
 
 func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
