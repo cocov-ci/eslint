@@ -24,10 +24,9 @@ func restoreNodeModules(ctx cocov.Context, e Exec, manager, nodePath string) err
 	return nil
 }
 
-func runEslint(ctx cocov.Context, e Exec, manager string) ([]result, error) {
-	ctx.L().Info("starting eslint")
-
-	opts := &cocov.ExecOpts{Workdir: ctx.Workdir()}
+func runEslint(ctx cocov.Context, e Exec, manager, nodePath string) ([]result, error) {
+	envs := map[string]string{"PATH": nodePath}
+	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
 	stdOut, stdErr, err := e.Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts)
 	if err != nil {
 		ctx.L().Error("error running eslint: %s",
