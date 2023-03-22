@@ -178,25 +178,13 @@ func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
 		return "", err
 	}
 
-	args := []string{"zxf", filename, "-C", nodePath}
+	args := []string{"zxf", filename, "--strip", "1", "-C", nodePath}
 	if _, err := e.Exec("tar", args, nil); err != nil {
 		ctx.L().Error("error extracting downloaded file", zap.Error(err))
 		return "", err
 	}
 
-	content, err := cocov.Exec("ls", []string{nodePath}, nil)
-	if err != nil {
-		ctx.L().Error("error listing directory content",
-			zap.String("path", nodePath),
-			zap.Error(err),
-		)
-		return "", err
-	}
-
-	binPath := strings.TrimSuffix(string(content), "\n")
-	binPath = filepath.Join(nodePath, binPath, "bin")
-
-	return binPath, nil
+	return filepath.Join(nodePath, "bin"), nil
 }
 
 func exportNodePath(ctx cocov.Context, nodePath string) (string, error) {
