@@ -3,6 +3,8 @@ github.com/Masterminds/semver v1.5.0/go.mod h1:MB6lktGJrhw8PrUyiEoblNEGEQ+RzHPF0
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/cocov-ci/go-plugin-kit v0.1.14 h1:Yv2oJVbmD5PdmJlO/bGuAwCc/HfMetPXxUb2XHDaKlA=
 github.com/cocov-ci/go-plugin-kit v0.1.14/go.mod h1:Ih8J02wRao5FW0DlVXmFmiQoPlaNZGEEqwvXI4UoXQw=
+github.com/cocov-ci/go-plugin-kit v0.1.15 h1:fLbR1PgihDE0RdmCyPVMEKJuX6QxEso+mykiAtYXyLo=
+github.com/cocov-ci/go-plugin-kit v0.1.15/go.mod h1:Ih8J02wRao5FW0DlVXmFmiQoPlaNZGEEqwvXI4UoXQw=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
