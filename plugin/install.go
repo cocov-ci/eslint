@@ -152,6 +152,14 @@ func findViableVersion(ctx cocov.Context, base string, c constraints, index *ver
 func downloadNode(ctx cocov.Context, url string) (string, error) {
 	fileName := "node.tar.gz"
 
+	if err := os.Mkdir(nodePath, os.ModePerm); err != nil {
+		ctx.L().Error("error creating directory",
+			zap.String("path", nodePath),
+			zap.Error(err),
+		)
+		return "", err
+	}
+
 	ctx.L().Info("downloading node", zap.String("url", url))
 	resp, err := grequests.Get(url, nil)
 	if err != nil {
@@ -161,42 +169,25 @@ func downloadNode(ctx cocov.Context, url string) (string, error) {
 
 	defer resp.Close()
 
-	if err = resp.DownloadToFile(fileName); err != nil {
+	tarPath := filepath.Join(nodePath, fileName)
+	if err = resp.DownloadToFile(tarPath); err != nil {
 		ctx.L().Error("error writing downloaded node to file", zap.Error(err))
 		return "", err
 	}
 
-	return filepath.Join(ctx.Workdir(), fileName), nil
+	return tarPath, nil
 }
 
-func untar(ctx cocov.Context, e Exec, filename string) (string, error) {
-	if err := os.Mkdir(nodePath, os.ModePerm); err != nil {
-		ctx.L().Error("error creating directory",
-			zap.String("path", nodePath),
-			zap.Error(err),
-		)
-		return "", err
-	}
-
-	args := []string{"zxf", filename, "--strip", "1", "-C", nodePath}
+func untar(ctx cocov.Context, e Exec, filePath string) (string, error) {
+	args := []string{"zxf", filePath, "--strip", "1", "-C", nodePath}
 	if _, err := e.Exec("tar", args, nil); err != nil {
 		ctx.L().Error("error extracting downloaded file", zap.Error(err))
 		return "", err
 	}
 
-	return filepath.Join(nodePath, "bin"), nil
-}
+	_ = os.Remove(filePath)
 
-func exportNodePath(ctx cocov.Context, nodePath string) (string, error) {
-	p := os.Getenv("PATH")
-	p = fmt.Sprintf("%s:%s", nodePath, p)
-
-	if err := os.Setenv("PATH", p); err != nil {
-		ctx.L().Error("failed to set PATH", zap.Error(err))
-		return "", err
-	}
-
-	return nodePath, nil
+	return filepath.Join(filePath, "bin"), nil
 }
 
 func errLockFileNotFound() error {
