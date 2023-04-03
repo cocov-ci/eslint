@@ -69,6 +69,10 @@ func (p *parser) feed(b byte) {
 	r := rune(b)
 	switch p.state {
 	case stateFeed:
+		if unicode.IsSpace(r) {
+			return
+		}
+
 		if r == ',' {
 			p.constraints = append(p.constraints, string(p.buffer))
 			p.buffer = p.buffer[:0]
