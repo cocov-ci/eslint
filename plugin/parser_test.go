@@ -37,8 +37,43 @@ func TestParser(t *testing.T) {
 	ok := cs.eval(v)
 	assert.True(t, ok)
 
-}
+	base = ">=1.2.3-beta.2 v1.2.4"
 
-func TestTest(t *testing.T) {
+	p = newParser()
+	cs, err = p.parse(base)
+	assert.NoError(t, err)
+
+	rv = "1.2.4"
+	v, err = semver.NewVersion(rv)
+	require.NoError(t, err)
+
+	ok = cs.eval(v)
+	assert.True(t, ok)
+
+	base = ">=1.2.3-beta.2, v1.2.4 || v1.3.0-0"
+
+	p = newParser()
+	cs, err = p.parse(base)
+	assert.NoError(t, err)
+
+	rv = "1.2.4"
+	v, err = semver.NewVersion(rv)
+	require.NoError(t, err)
+
+	ok = cs.eval(v)
+	assert.True(t, ok)
+
+	base = "v1.2.4 || v1.3.0-0, >=1.2.3-beta.2"
+
+	p = newParser()
+	cs, err = p.parse(base)
+	assert.NoError(t, err)
+
+	rv = "1.2.4"
+	v, err = semver.NewVersion(rv)
+	require.NoError(t, err)
+
+	ok = cs.eval(v)
+	assert.True(t, ok)
 
 }
