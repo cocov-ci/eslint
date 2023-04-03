@@ -14,7 +14,7 @@ import (
 
 func TestFindNodeVersion(t *testing.T) {
 	ver := "v12.x"
-	root := findParentDir(t)
+	root := findRepositoryRoot(t)
 	fixtures := filepath.Join(root, "plugin", "fixtures")
 	pkgJsonPath := filepath.Join(fixtures, pkgJson)
 	t.Run("package.json not found", func(t *testing.T) {

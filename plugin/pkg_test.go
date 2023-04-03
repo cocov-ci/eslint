@@ -8,7 +8,7 @@ import (
 )
 
 func TestInstallPkgManager(t *testing.T) {
-	root := findParentDir(t)
+	root := findRepositoryRoot(t)
 	fixtureRoot := filepath.Join(root, "plugin", "fixtures")
 
 	t.Run("Lockfile not found", func(t *testing.T) {

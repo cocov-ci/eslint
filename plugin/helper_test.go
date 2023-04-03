@@ -29,7 +29,7 @@ func newTestHelper(t *testing.T) *testHelper {
 	return &testHelper{ctx, exec}
 }
 
-func findParentDir(t *testing.T) string {
+func findRepositoryRoot(t *testing.T) string {
 	out, err := cocov.Exec("git", []string{"rev-parse", "--show-toplevel"}, nil)
 	require.NoError(t, err)
 	return strings.TrimSpace(string(out))
