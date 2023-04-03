@@ -24,10 +24,19 @@ func restoreNodeModules(ctx cocov.Context, e Exec, manager, nodePath string) err
 	return nil
 }
 
-func runEslint(ctx cocov.Context, e Exec, manager, nodePath string) ([]result, error) {
+func runEslint(ctx cocov.Context, e Exec, manager, nodePath string) (*cliOutput, error) {
+	args := []string{"run", "", "eslint", "-f", "json-with-metadata", "."}
+
+	if manager == yarn {
+		args[1] = "-s"
+	}
+
+	ctx.L().Info("Running eslint")
+	start := time.Now()
+
 	envs := map[string]string{"PATH": nodePath}
 	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
-	stdOut, stdErr, err := e.Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts)
+	stdOut, stdErr, err := e.Exec2(manager, args, opts)
 	if err != nil {
 		ctx.L().Error("error running eslint: %s",
 			zap.String("std out", string(stdOut)),
@@ -37,15 +46,15 @@ func runEslint(ctx cocov.Context, e Exec, manager, nodePath string) ([]result, e
 		return nil, err
 	}
 
-	var res []result
-	if err = json.Unmarshal(stdOut, &res); err != nil {
+	msg := fmt.Sprintf("Running eslint took %s seconds", time.Since(start))
+	ctx.L().Info(msg)
+
+	out := &cliOutput{}
+	if err = json.Unmarshal(stdOut, out); err != nil {
 		ctx.L().Error("failed to unmarshall output",
-			zap.String("std out", string(stdOut)),
-			zap.String("std err", string(stdErr)),
 			zap.Error(err),
 		)
 		return nil, err
 	}
-
-	return res, nil
+	return out, nil
 }

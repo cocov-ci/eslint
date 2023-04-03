@@ -58,7 +58,7 @@ func TestRunEslint(t *testing.T) {
 		boom := errors.New("boom")
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
+			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
 			Return(stdOut, stdErr, boom)
 
 		_, err := runEslint(helper.ctx, helper.exec, manager, np)
@@ -74,7 +74,7 @@ func TestRunEslint(t *testing.T) {
 		stdErr := []byte("something went wrong")
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
+			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
 			Return(stdOut, stdErr, nil)
 
 		_, err := runEslint(helper.ctx, helper.exec, manager, np)
@@ -90,7 +90,7 @@ func TestRunEslint(t *testing.T) {
 		stdOut := validOutput()
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "eslint", "-f", "json"}, opts).
+			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
 			Return(stdOut, nil, nil)
 
 		res, err := runEslint(helper.ctx, helper.exec, manager, np)
