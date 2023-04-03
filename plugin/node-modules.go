@@ -10,6 +10,7 @@ import (
 func restoreNodeModules(ctx cocov.Context, e Exec, manager, nodePath string) error {
 	envs := map[string]string{"PATH": nodePath}
 	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
+	ctx.L().Info("Restoring node modules")
 	stdOut, stdErr, err := e.Exec2(manager, []string{"install"}, opts)
 	if err != nil {
 		ctx.L().Error("error restoring node modules",
