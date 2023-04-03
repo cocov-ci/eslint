@@ -3,6 +3,7 @@ package plugin
 import (
 	"fmt"
 	"strings"
+	"unicode"
 
 	"github.com/Masterminds/semver"
 )

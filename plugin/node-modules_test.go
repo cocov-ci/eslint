@@ -2,6 +2,8 @@ package plugin
 
 import (
 	"errors"
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/cocov-ci/go-plugin-kit/cocov"

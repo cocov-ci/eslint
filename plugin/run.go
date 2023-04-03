@@ -1,6 +1,11 @@
 package plugin
 
-import "github.com/cocov-ci/go-plugin-kit/cocov"
+import (
+	"fmt"
+
+	"github.com/cocov-ci/go-plugin-kit/cocov"
+	"go.uber.org/zap"
+)
 
 func Run(ctx cocov.Context) error {
 	out, err := run(ctx)
@@ -49,7 +54,7 @@ func run(ctx cocov.Context) (*cliOutput, error) {
 		return nil, err
 	}
 
-	res, err := runEslint(ctx, exec, mgr, "")
+	res, err := runEslint(ctx, exec, mgr, np)
 	if err != nil {
 		return nil, err
 	}
