@@ -5,8 +5,8 @@ import "github.com/cocov-ci/go-plugin-kit/cocov"
 type message struct {
 	RuleID  string `json:"ruleId"`
 	Message string `json:"message"`
-	Line    uint16 `json:"line"`
-	EndLine uint16 `json:"endLine"`
+	Line    uint   `json:"line"`
+	EndLine uint   `json:"endLine"`
 }
 
 type result struct {
