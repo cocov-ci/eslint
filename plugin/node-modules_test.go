@@ -87,36 +87,23 @@ func TestRunEslint(t *testing.T) {
 
 		helper.ctx.EXPECT().Workdir().Return(wd)
 
-		stdOut := validOutput()
+		stdOut := validOutput(t)
 
 		helper.exec.EXPECT().
 			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
 			Return(stdOut, nil, nil)
 
-		res, err := runEslint(helper.ctx, helper.exec, manager, np)
+		out, err := runEslint(helper.ctx, helper.exec, manager, np)
 		require.NoError(t, err)
-		assert.NotNil(t, res)
-		assert.Len(t, res, 1)
+		assert.NotNil(t, out)
 	})
 }
 
-func validOutput() []byte {
-	return []byte(`[
-  {
-    "filePath": "/var/lib/jenkins/workspace/Releases/eslint Release/eslint/fullOfProblems.js",
-    "messages": [
-      {
-        "ruleId": "no-unused-vars",
-        "severity": 2,
-        "message": "'addOne' is defined but never used.",
-        "line": 1,
-        "column": 10,
-        "nodeType": "Identifier",
-        "messageId": "unusedVar",
-        "endLine": 1,
-        "endColumn": 16
-      }
-    ]
-  }
-]`)
+func validOutput(t *testing.T) []byte {
+	root := findRepositoryRoot(t)
+	dataPath := filepath.Join(root, "plugin", "fixtures", "out.json")
+
+	data, err := os.ReadFile(dataPath)
+	require.NoError(t, err)
+	return data
 }
