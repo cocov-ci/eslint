@@ -78,8 +78,7 @@ func buildFile(ruleMap map[string]map[string]bool) {
 	b.WriteString("import \"github.com/cocov-ci/go-plugin-kit/cocov\"\n")
 	b.WriteString("var rules = map[string]cocov.IssueKind{\n")
 	for ruleType, rules := range ruleMap {
-		for ruleName, _ := range rules {
-
+		for ruleName := range rules {
 			issueKind := ""
 			switch ruleType {
 			case suggestions:
