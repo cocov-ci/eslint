@@ -62,10 +62,8 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	np, err := exportNodePath(ctx, binPath)
-	if err != nil {
-		return "", err
-	}
+	rawPath := os.Getenv("PATH")
+	np := fmt.Sprintf("%s:%s", binPath, rawPath)
 
 	return np, nil
 }
