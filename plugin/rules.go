@@ -1,6 +1,6 @@
 package plugin
 
-import "github.com/cocov-ci/go-plugin-kit/cocov"
+//go:generate go run ../generator/genrules.go
 
 type message struct {
 	RuleID  string `json:"ruleId"`
