@@ -35,7 +35,7 @@ func (p *parser) parse(s string) (constraints, error) {
 func (p *parser) render() (constraints, error) {
 	cs := make(constraints, 0, len(p.constraints))
 	for _, s := range p.constraints {
-		s = trimXVersion(s)
+		s = replaceXVersion(s)
 		c, err := semver.NewConstraint(s)
 		if err != nil {
 			return nil, constraintRenderErr(s, err)
@@ -128,6 +128,6 @@ func constraintRenderErr(constraint string, e error) error {
 	return fmt.Errorf("error parsing constraint \"%s\": %s", constraint, e)
 }
 
-func trimXVersion(s string) string {
+func replaceXVersion(s string) string {
 	return strings.Replace(s, "x", "*", -1)
 }
