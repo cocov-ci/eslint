@@ -14,5 +14,15 @@ type result struct {
 	Messages []message `json:"messages"`
 }
 
-// TODO: classify Eslint rules
-var rules = map[string]cocov.IssueKind{}
+type metadata struct {
+	RulesMeta map[string]metadataInfo
+}
+
+type metadataInfo struct {
+	Type string `json:"type"`
+}
+
+type cliOutput struct {
+	Results  []result `json:"results"`
+	Metadata metadata `json:"metadata"`
+}
