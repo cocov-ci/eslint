@@ -33,7 +33,7 @@ func Run(ctx cocov.Context) error {
 	return nil
 }
 
-func run(ctx cocov.Context) ([]result, error) {
+func run(ctx cocov.Context) (*cliOutput, error) {
 	exec := defaultExec()
 	np, err := installNode(ctx, exec)
 	if err != nil {
