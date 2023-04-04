@@ -7,6 +7,9 @@ jobs:
   Test:
     name: Test
     runs-on: ubuntu-latest
+    env:
+      COCOV_REPOSITORY_TOKEN: ${{ secrets.COCOV_REPOSITORY_TOKEN }}
+      COCOV_API_URL: ${{ secrets.COCOV_API_URL }}
 
     steps:
       - name: Set up Go 1.19
@@ -20,6 +23,35 @@ jobs:
       - name: Check out to repository
         uses: actions/checkout@v2
 
+      - name: Prepare coverage-reporter
+        run: |
+          curl -sSL https://vito.io/private/coverage-reporter > .coverage-reporter
+          chmod +x .coverage-reporter
+          ./.coverage-reporter prepare
+
       - name: Run tests
         run: | 
           script/test
+
+      - name: Push coverage report
+        run: ./.coverage-reporter submit
+
+  build:
+    if: github.ref == 'refs/heads/master'
+    needs: test
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out to repository
+        uses: actions/checkout@v2
+
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_LOGIN }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Run script/build
+        run: |
+          script/build --build-arg go_token=${{ secrets.GO_SDK_CLONE_TOKEN }}
