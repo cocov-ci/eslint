@@ -58,8 +58,10 @@ func TestRestoreNodeModules(t *testing.T) {
 func TestRunEslint(t *testing.T) {
 	wd := "workdir"
 	np := "node-path"
-	manager := yarn
+	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
+	args := []string{"-f", "json-with-metadata", "."}
 	opts := &cocov.ExecOpts{Workdir: wd, Env: map[string]string{"PATH": np}}
+
 	t.Run("Fails running eslint", func(t *testing.T) {
 		helper := newTestHelper(t)
 
@@ -70,10 +72,10 @@ func TestRunEslint(t *testing.T) {
 		boom := errors.New("boom")
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
+			Exec2(eslintPath, args, opts).
 			Return(stdOut, stdErr, boom)
 
-		_, err := runEslint(helper.ctx, helper.exec, manager, np)
+		_, err := runEslint(helper.ctx, helper.exec, np)
 		require.Error(t, err)
 	})
 
@@ -86,10 +88,10 @@ func TestRunEslint(t *testing.T) {
 		stdErr := []byte("something went wrong")
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
+			Exec2(eslintPath, args, opts).
 			Return(stdOut, stdErr, nil)
 
-		_, err := runEslint(helper.ctx, helper.exec, manager, np)
+		_, err := runEslint(helper.ctx, helper.exec, np)
 		require.Error(t, err)
 		assert.ErrorContains(t, err, "json")
 	})
@@ -102,10 +104,10 @@ func TestRunEslint(t *testing.T) {
 		stdOut := validOutput(t)
 
 		helper.exec.EXPECT().
-			Exec2(manager, []string{"run", "-s", "eslint", "-f", "json-with-metadata", "."}, opts).
+			Exec2(eslintPath, args, opts).
 			Return(stdOut, nil, nil)
 
-		out, err := runEslint(helper.ctx, helper.exec, manager, np)
+		out, err := runEslint(helper.ctx, helper.exec, np)
 		require.NoError(t, err)
 		assert.NotNil(t, out)
 	})
