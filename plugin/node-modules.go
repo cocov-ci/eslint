@@ -38,19 +38,17 @@ func restoreNodeModules(ctx cocov.Context, e Exec, manager, file, nodePath strin
 	return nil
 }
 
-func runEslint(ctx cocov.Context, e Exec, manager, nodePath string) (*cliOutput, error) {
-	args := []string{"run", "", "eslint", "-f", "json-with-metadata", "."}
-
-	if manager == yarn {
-		args[1] = "-s"
-	}
+func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
+	wd := ctx.Workdir()
+	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
+	args := []string{"-f", "json-with-metadata", "."}
 
 	ctx.L().Info("Running eslint")
 	start := time.Now()
 
 	envs := map[string]string{"PATH": nodePath}
-	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
-	stdOut, stdErr, err := e.Exec2(manager, args, opts)
+	opts := &cocov.ExecOpts{Workdir: wd, Env: envs}
+	stdOut, stdErr, err := e.Exec2(eslintPath, args, opts)
 	if err != nil {
 		ctx.L().Error("error running eslint: %s",
 			zap.String("std out", string(stdOut)),
