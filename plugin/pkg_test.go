@@ -15,7 +15,7 @@ func TestInstallPkgManager(t *testing.T) {
 		helper := newTestHelper(t)
 		helper.ctx.EXPECT().Workdir().Return(fixtureRoot)
 
-		_, err := findLockFile(helper.ctx)
+		_, _, err := findLockFile(helper.ctx)
 		assert.Error(t, err)
 	})
 
@@ -24,7 +24,7 @@ func TestInstallPkgManager(t *testing.T) {
 		helper := newTestHelper(t)
 		helper.ctx.EXPECT().Workdir().Return(p)
 
-		mgr, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, npm)
 	})
@@ -34,7 +34,7 @@ func TestInstallPkgManager(t *testing.T) {
 		helper := newTestHelper(t)
 		helper.ctx.EXPECT().Workdir().Return(p)
 
-		mgr, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, yarn)
 	})
@@ -44,7 +44,7 @@ func TestInstallPkgManager(t *testing.T) {
 		helper := newTestHelper(t)
 		helper.ctx.EXPECT().Workdir().Return(p)
 
-		mgr, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, pnpm)
 	})

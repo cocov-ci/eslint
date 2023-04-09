@@ -14,12 +14,18 @@ import (
 func TestRestoreNodeModules(t *testing.T) {
 	wd := "workdir"
 	np := "node-path"
+	nodeModules := "node_modules"
+	lockFile := "yarn.lock"
+
+	artifactKeys := []string{"package.json", lockFile}
 	manager := yarn
 	opts := &cocov.ExecOpts{Workdir: wd, Env: map[string]string{"PATH": np}}
 	t.Run("Fails to restore node modules", func(t *testing.T) {
 		helper := newTestHelper(t)
 
 		helper.ctx.EXPECT().Workdir().Return(wd)
+
+		helper.ctx.EXPECT().LoadArtifactCache(artifactKeys, nodeModules)
 
 		stdOut := []byte("something on std out")
 		stdErr := []byte("something on std err")
@@ -28,7 +34,7 @@ func TestRestoreNodeModules(t *testing.T) {
 			Exec2(manager, []string{"install"}, opts).
 			Return(stdOut, stdErr, boom)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager, np)
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np)
 		require.Error(t, err)
 	})
 
@@ -36,11 +42,15 @@ func TestRestoreNodeModules(t *testing.T) {
 		helper := newTestHelper(t)
 		helper.ctx.EXPECT().Workdir().Return(wd)
 
+		helper.ctx.EXPECT().LoadArtifactCache(artifactKeys, nodeModules)
+
 		helper.exec.EXPECT().
 			Exec2(manager, []string{"install"}, opts).
 			Return(nil, nil, nil)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager, np)
+		helper.ctx.EXPECT().StoreArtifactCache(artifactKeys, nodeModules)
+
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np)
 		require.NoError(t, err)
 	})
 }
@@ -53,7 +63,7 @@ func TestRunEslint(t *testing.T) {
 	t.Run("Fails running eslint", func(t *testing.T) {
 		helper := newTestHelper(t)
 
-		helper.ctx.EXPECT().Workdir().Return(wd)
+		helper.ctx.EXPECT().Workdir().Return(wd).AnyTimes()
 
 		stdOut := []byte("something on std out")
 		stdErr := []byte("something on std err")

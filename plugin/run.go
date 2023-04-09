@@ -45,16 +45,16 @@ func run(ctx cocov.Context) (*cliOutput, error) {
 		return nil, err
 	}
 
-	mgr, err := installPkgManager(ctx, exec, np)
+	mgr, file, err := installPkgManager(ctx, exec, np)
 	if err != nil {
 		return nil, err
 	}
 
-	if err = restoreNodeModules(ctx, exec, mgr, np); err != nil {
+	if err = restoreNodeModules(ctx, exec, mgr, file, np); err != nil {
 		return nil, err
 	}
 
-	res, err := runEslint(ctx, exec, mgr, np)
+	res, err := runEslint(ctx, exec, np)
 	if err != nil {
 		return nil, err
 	}
