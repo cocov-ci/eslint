@@ -3,6 +3,7 @@ package plugin
 import (
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"time"
 
 	"github.com/cocov-ci/go-plugin-kit/cocov"

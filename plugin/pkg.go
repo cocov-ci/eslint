@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"fmt"
 	"os"
 
 	"github.com/cocov-ci/go-plugin-kit/cocov"
@@ -15,7 +14,6 @@ const (
 )
 
 var managers = map[string]string{
-	"package-lock.json": npm,
 	"pnpm-lock.yaml":    pnpm,
 	"yarn.lock":         yarn,
 	"package-lock.json": npm,
