@@ -67,7 +67,8 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	ctx.StoreToolCache(cachedVersion, binPath)
+	ctx.StoreToolCache(cachedVersion, nodePath)
+
 	rawPath := os.Getenv("PATH")
 	np := fmt.Sprintf("%s:%s", binPath, rawPath)
 
