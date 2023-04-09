@@ -7,6 +7,10 @@ github.com/andybalholm/cascadia v1.3.1/go.mod h1:R4bJ1UQfqADjvDa4P6HZHLh/3OxWWEq
 github.com/benbjohnson/clock v1.1.0 h1:Q92kusRqC1XV2MjkWETPvjJVqKetz1OzxZB7mHJLju8=
 github.com/cocov-ci/go-plugin-kit v0.1.18 h1:WiruRBQnshD6hJmC1sE5AludXpoek4isKpR8Q//YzJI=
 github.com/cocov-ci/go-plugin-kit v0.1.18/go.mod h1:Ih8J02wRao5FW0DlVXmFmiQoPlaNZGEEqwvXI4UoXQw=
+github.com/cocov-ci/go-plugin-kit v0.1.19 h1:hG2maUu5N4L64Fr/feHorKSdlzxm7LTUQ0EfG5v1gGg=
+github.com/cocov-ci/go-plugin-kit v0.1.19/go.mod h1:q8xohq/d5HgNt29BIvB1cMWdezLxpcgj7vtKVvR+5O8=
+github.com/cocov-ci/go-plugin-kit v0.1.20 h1:1pA/vTsltTPjD6LTHTnVMfzeOHRQvjLTcS4SJgFDYV4=
+github.com/cocov-ci/go-plugin-kit v0.1.20/go.mod h1:q8xohq/d5HgNt29BIvB1cMWdezLxpcgj7vtKVvR+5O8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c=
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=

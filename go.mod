@@ -5,7 +5,7 @@ go 1.19
 require (
 	github.com/Masterminds/semver v1.5.0
 	github.com/PuerkitoBio/goquery v1.8.1
-	github.com/cocov-ci/go-plugin-kit v0.1.18
+	github.com/cocov-ci/go-plugin-kit v0.1.20
 	github.com/golang/mock v1.6.0
 	github.com/heyvito/httpie v0.1.1
 	github.com/levigross/grequests v0.0.0-20221222020224-9eee758d18d5
