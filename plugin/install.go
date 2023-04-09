@@ -191,7 +191,7 @@ func untar(ctx cocov.Context, e Exec, filePath string) (string, error) {
 
 	_ = os.Remove(filePath)
 
-	return filepath.Join(filePath, "bin"), nil
+	return filepath.Join(nodePath, "bin"), nil
 }
 
 func errLockFileNotFound() error {
