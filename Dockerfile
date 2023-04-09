@@ -25,4 +25,4 @@ RUN usermod -a -G cocov cocov
 
 USER cocov
 
-CMD ["plugin-eslint"]
+CMD ["eslint"]
