@@ -13,16 +13,3 @@ type result struct {
 	FilePath string    `json:"filePath"`
 	Messages []message `json:"messages"`
 }
-
-type metadata struct {
-	RulesMeta map[string]metadataInfo
-}
-
-type metadataInfo struct {
-	Type string `json:"type"`
-}
-
-type cliOutput struct {
-	Results  []result `json:"results"`
-	Metadata metadata `json:"metadata"`
-}

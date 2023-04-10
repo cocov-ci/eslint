@@ -14,9 +14,8 @@ func Run(ctx cocov.Context) error {
 	}
 
 	sha := ctx.CommitSHA()
-	for _, res := range out.Results {
+	for _, res := range out {
 		for _, m := range res.Messages {
-
 			kind, ok := rules[m.RuleID]
 			if !ok {
 				continue
@@ -34,11 +33,10 @@ func Run(ctx cocov.Context) error {
 			}
 		}
 	}
-
 	return nil
 }
 
-func run(ctx cocov.Context) (*cliOutput, error) {
+func run(ctx cocov.Context) ([]result, error) {
 	exec := defaultExec()
 	np, err := installNode(ctx, exec)
 	if err != nil {
