@@ -19,7 +19,7 @@ func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
 	start := time.Now()
 
 	envs := map[string]string{"PATH": nodePath}
-	opts := &cocov.ExecOpts{Workdir: wd, Env: envs}
+	opts := &cocov.ExecOpts{Env: envs}
 	stdOut, stdErr, err := e.Exec2(eslintPath, args, opts)
 	if err != nil {
 		if execErr, ok := err.(*exec.ExitError); ok {
