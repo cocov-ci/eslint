@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 
@@ -31,6 +32,10 @@ type versionIndex struct {
 }
 
 func installNode(ctx cocov.Context, exec Exec) (string, error) {
+	rawPath := os.Getenv("PATH")
+	binPath := path.Join(nodePath, "bin")
+	np := fmt.Sprintf("%s:%s", binPath, rawPath)
+
 	version, err := findNodeVersion(ctx)
 	if err != nil {
 		return "", err
@@ -38,7 +43,7 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 
 	cachedVersion := toolCacheVersion(version)
 	if ok := ctx.LoadToolCache(cachedVersion, nodePath); ok {
-		return nodePath, nil
+		return np, nil
 	}
 
 	consts, err := determineVersionConstraints(version)
@@ -62,15 +67,12 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	binPath, err := untar(ctx, exec, zip)
+	_, err = untar(ctx, exec, zip)
 	if err != nil {
 		return "", err
 	}
 
 	ctx.StoreToolCache(cachedVersion, nodePath)
-
-	rawPath := os.Getenv("PATH")
-	np := fmt.Sprintf("%s:%s", binPath, rawPath)
 
 	return np, nil
 }
