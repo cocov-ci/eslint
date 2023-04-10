@@ -64,7 +64,6 @@ func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
 
 		} else if !ok {
 			ctx.L().Error("error running eslint",
-				zap.Int("status", execErr.ExitCode()),
 				zap.String("std err", string(stdErr)),
 				zap.Error(err),
 			)
