@@ -41,8 +41,8 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	cachedVersion := toolCacheVersion(version)
-	if ok := ctx.LoadToolCache(cachedVersion, nodePath); ok {
+	tck := toolCacheKey(version)
+	if ok := ctx.LoadToolCache(tck, nodePath); ok {
 		return np, nil
 	}
 
@@ -72,7 +72,7 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	ctx.StoreToolCache(cachedVersion, nodePath)
+	ctx.StoreToolCache(tck, nodePath)
 
 	return np, nil
 }
@@ -225,6 +225,6 @@ func downloadURL(version *semver.Version) string {
 var errNoPkgJson = errors.New("package.json not found")
 var errNoVersionFound = errors.New("failed to determine node version using package.json")
 
-func toolCacheVersion(version string) string {
+func toolCacheKey(version string) string {
 	return fmt.Sprintf("node-%s-linux-x64", version)
 }
