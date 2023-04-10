@@ -3,6 +3,7 @@ package plugin
 import (
 	"encoding/json"
 	"fmt"
+	"os/exec"
 	"path/filepath"
 	"time"
 
@@ -51,12 +52,24 @@ func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
 	opts := &cocov.ExecOpts{Workdir: wd, Env: envs}
 	stdOut, stdErr, err := e.Exec2(eslintPath, args, opts)
 	if err != nil {
-		ctx.L().Error("error running eslint: %s",
-			zap.String("std out", string(stdOut)),
-			zap.String("std err", string(stdErr)),
-			zap.Error(err),
-		)
-		return nil, err
+		if execErr, ok := err.(*exec.ExitError); ok {
+			if execErr.ExitCode() != 1 {
+				ctx.L().Error("eslint exited with unexpected status",
+					zap.Int("status", execErr.ExitCode()),
+					zap.String("std err", string(stdErr)),
+					zap.Error(err),
+				)
+				return nil, err
+			}
+
+		} else if !ok {
+			ctx.L().Error("error running eslint",
+				zap.Int("status", execErr.ExitCode()),
+				zap.String("std err", string(stdErr)),
+				zap.Error(err),
+			)
+			return nil, err
+		}
 	}
 
 	msg := fmt.Sprintf("Running eslint took %s seconds", time.Since(start))
