@@ -67,7 +67,7 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 		return "", err
 	}
 
-	_, err = untar(ctx, exec, zip)
+	err = untar(ctx, exec, zip)
 	if err != nil {
 		return "", err
 	}
@@ -185,16 +185,16 @@ func downloadNode(ctx cocov.Context, url string) (string, error) {
 	return tarPath, nil
 }
 
-func untar(ctx cocov.Context, e Exec, filePath string) (string, error) {
+func untar(ctx cocov.Context, e Exec, filePath string) error {
 	args := []string{"zxf", filePath, "--strip", "1", "-C", nodePath}
 	if _, err := e.Exec("tar", args, nil); err != nil {
 		ctx.L().Error("error extracting downloaded file", zap.Error(err))
-		return "", err
+		return err
 	}
 
 	_ = os.Remove(filePath)
 
-	return filepath.Join(nodePath, "bin"), nil
+	return nil
 }
 
 func errLockFileNotFound() error {
