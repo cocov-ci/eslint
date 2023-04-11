@@ -10,10 +10,10 @@ import (
 	"time"
 )
 
-func runEslint(ctx cocov.Context, e Exec, nodePath string) ([]result, error) {
+func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
 	wd := ctx.Workdir()
 	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
-	args := []string{"-f", "json", "."}
+	args := []string{"-f", "json-with-metadata", "--quiet", "."}
 
 	ctx.L().Info("Running eslint")
 	start := time.Now()
@@ -44,16 +44,14 @@ func runEslint(ctx cocov.Context, e Exec, nodePath string) ([]result, error) {
 	msg := fmt.Sprintf("Running eslint took %s seconds", time.Since(start))
 	ctx.L().Info(msg)
 
-	res := struct {
-		Results []result `json:"results"`
-	}{}
+	out := newCliOutput()
 
-	if err = json.Unmarshal(stdOut, &res); err != nil {
+	if err = json.Unmarshal(stdOut, &out); err != nil {
 		ctx.L().Error("failed to unmarshall output",
 			zap.Error(err),
 		)
 		return nil, err
 	}
 
-	return res.Results, nil
+	return out, nil
 }

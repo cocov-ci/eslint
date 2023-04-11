@@ -13,7 +13,7 @@ func TestRunEslint(t *testing.T) {
 	wd := "workdir"
 	np := "node-path"
 	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
-	args := []string{"-f", "json", "."}
+	args := []string{"-f", "json-with-metadata", "--quiet", "."}
 	opts := &cocov.ExecOpts{Env: map[string]string{"PATH": np}}
 
 	t.Run("Fails running eslint", func(t *testing.T) {
