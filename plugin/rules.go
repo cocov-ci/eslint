@@ -1,8 +1,9 @@
 package plugin
 
 import (
-	"github.com/cocov-ci/go-plugin-kit/cocov"
 	"strings"
+
+	"github.com/cocov-ci/go-plugin-kit/cocov"
 )
 
 //go:generate go run ../generator/genrules.go

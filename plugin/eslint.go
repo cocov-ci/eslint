@@ -3,11 +3,12 @@ package plugin
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/cocov-ci/go-plugin-kit/cocov"
-	"go.uber.org/zap"
 	"os/exec"
 	"path/filepath"
 	"time"
+
+	"github.com/cocov-ci/go-plugin-kit/cocov"
+	"go.uber.org/zap"
 )
 
 func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {

@@ -2,11 +2,12 @@ package plugin
 
 import (
 	"errors"
+	"path/filepath"
+	"testing"
+
 	"github.com/cocov-ci/go-plugin-kit/cocov"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"path/filepath"
-	"testing"
 )
 
 func TestRunEslint(t *testing.T) {
