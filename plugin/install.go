@@ -36,7 +36,7 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 	binPath := path.Join(nodePath, "bin")
 	np := fmt.Sprintf("%s:%s", binPath, rawPath)
 
-	version, err := findNodeVersion(ctx)
+	version, err := checkDependencies(ctx)
 	if err != nil {
 		return "", err
 	}
@@ -77,7 +77,7 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 	return np, nil
 }
 
-func findNodeVersion(ctx cocov.Context) (string, error) {
+func checkDependencies(ctx cocov.Context) (string, error) {
 	pkgPath := filepath.Join(ctx.Workdir(), pkgJson)
 	f, err := os.ReadFile(pkgPath)
 	if err != nil {
@@ -94,6 +94,9 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 		Engines struct {
 			Node string `json:"node"`
 		} `json:"engines"`
+
+		Deps    map[string]string `json:"dependencies"`
+		DevDeps map[string]string `json:"devDependencies"`
 	}{}
 
 	if err = json.Unmarshal(f, &pkg); err != nil {
@@ -105,6 +108,13 @@ func findNodeVersion(ctx cocov.Context) (string, error) {
 	if enginesVersion == "" {
 		ctx.L().Error(errNoVersionFound.Error())
 		return "", errNoVersionFound
+	}
+
+	eslintKey := "eslint"
+	if _, ok := pkg.Deps[eslintKey]; !ok {
+		if _, ok = pkg.DevDeps[eslintKey]; !ok {
+			return "", errNoEslintDep
+		}
 	}
 
 	return enginesVersion, nil
@@ -224,6 +234,7 @@ func downloadURL(version *semver.Version) string {
 
 var errNoPkgJson = errors.New("package.json not found")
 var errNoVersionFound = errors.New("failed to determine node version using package.json")
+var errNoEslintDep = errors.New("eslint not found as a project dependency")
 
 func toolCacheKey(version string) string {
 	return fmt.Sprintf("node-%s-linux-x64", version)
