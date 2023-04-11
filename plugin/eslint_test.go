@@ -61,8 +61,8 @@ func TestRunEslint(t *testing.T) {
 			Exec2(eslintPath, args, opts).
 			Return(stdOut, nil, nil)
 
-		res, err := runEslint(helper.ctx, helper.exec, np)
+		out, err := runEslint(helper.ctx, helper.exec, np)
 		require.NoError(t, err)
-		assert.NotNil(t, res)
+		assert.NotNil(t, out)
 	})
 }
