@@ -1,6 +1,8 @@
 package plugin
 
 import (
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 
@@ -33,4 +35,13 @@ func findRepositoryRoot(t *testing.T) string {
 	out, err := cocov.Exec("git", []string{"rev-parse", "--show-toplevel"}, nil)
 	require.NoError(t, err)
 	return strings.TrimSpace(string(out))
+}
+
+func validOutput(t *testing.T) []byte {
+	root := findRepositoryRoot(t)
+	dataPath := filepath.Join(root, "plugin", "fixtures", "out.json")
+
+	data, err := os.ReadFile(dataPath)
+	require.NoError(t, err)
+	return data
 }

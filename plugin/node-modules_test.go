@@ -2,8 +2,6 @@ package plugin
 
 import (
 	"errors"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/cocov-ci/go-plugin-kit/cocov"
@@ -52,13 +50,4 @@ func TestRestoreNodeModules(t *testing.T) {
 		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np)
 		require.NoError(t, err)
 	})
-}
-
-func validOutput(t *testing.T) []byte {
-	root := findRepositoryRoot(t)
-	dataPath := filepath.Join(root, "plugin", "fixtures", "out.json")
-
-	data, err := os.ReadFile(dataPath)
-	require.NoError(t, err)
-	return data
 }
