@@ -104,8 +104,8 @@ func checkDependencies(ctx cocov.Context) (string, error) {
 		return "", err
 	}
 
-	enginesVersion := pkg.Engines.Node
-	if enginesVersion == "" {
+	nodeVersion := pkg.Engines.Node
+	if nodeVersion == "" {
 		ctx.L().Error(errNoVersionFound.Error())
 		return "", errNoVersionFound
 	}
@@ -117,7 +117,7 @@ func checkDependencies(ctx cocov.Context) (string, error) {
 		}
 	}
 
-	return enginesVersion, nil
+	return nodeVersion, nil
 }
 
 func determineVersionConstraints(version string) (constraints, error) {
