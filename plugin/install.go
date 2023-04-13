@@ -77,49 +77,6 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 	return np, nil
 }
 
-func checkDependencies(ctx cocov.Context) (string, error) {
-	pkgPath := filepath.Join(ctx.Workdir(), pkgJson)
-	f, err := os.ReadFile(pkgPath)
-	if err != nil {
-		if os.IsNotExist(err) {
-			ctx.L().Error("package.json not found", zap.Error(err))
-			return "", errNoPkgJson
-		}
-
-		ctx.L().Error("failed to read package.json", zap.Error(err))
-		return "", err
-	}
-
-	pkg := struct {
-		Engines struct {
-			Node string `json:"node"`
-		} `json:"engines"`
-
-		Deps    map[string]string `json:"dependencies"`
-		DevDeps map[string]string `json:"devDependencies"`
-	}{}
-
-	if err = json.Unmarshal(f, &pkg); err != nil {
-		ctx.L().Error("failed to unmarshall package.json", zap.Error(err))
-		return "", err
-	}
-
-	nodeVersion := pkg.Engines.Node
-	if nodeVersion == "" {
-		ctx.L().Error(errNoVersionFound.Error())
-		return "", errNoVersionFound
-	}
-
-	eslintKey := "eslint"
-	if _, ok := pkg.Deps[eslintKey]; !ok {
-		if _, ok = pkg.DevDeps[eslintKey]; !ok {
-			return "", errNoEslintDep
-		}
-	}
-
-	return nodeVersion, nil
-}
-
 func determineVersionConstraints(version string) (constraints, error) {
 	v, err := semver.NewConstraint(version)
 	if err == nil {
