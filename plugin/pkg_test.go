@@ -13,18 +13,14 @@ func TestInstallPkgManager(t *testing.T) {
 
 	t.Run("Lockfile not found", func(t *testing.T) {
 		helper := newTestHelper(t)
-		helper.ctx.EXPECT().Workdir().Return(fixtureRoot)
-
-		_, _, err := findLockFile(helper.ctx)
+		_, _, err := findLockFile(helper.ctx, fixtureRoot)
 		assert.Error(t, err)
 	})
 
 	t.Run("Founds npm", func(t *testing.T) {
 		p := filepath.Join(fixtureRoot, "npm")
 		helper := newTestHelper(t)
-		helper.ctx.EXPECT().Workdir().Return(p)
-
-		mgr, _, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx, p)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, npm)
 	})
@@ -32,9 +28,7 @@ func TestInstallPkgManager(t *testing.T) {
 	t.Run("Founds yarn", func(t *testing.T) {
 		p := filepath.Join(fixtureRoot, "yarn")
 		helper := newTestHelper(t)
-		helper.ctx.EXPECT().Workdir().Return(p)
-
-		mgr, _, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx, p)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, yarn)
 	})
@@ -42,9 +36,7 @@ func TestInstallPkgManager(t *testing.T) {
 	t.Run("Founds pnpm", func(t *testing.T) {
 		p := filepath.Join(fixtureRoot, "pnpm")
 		helper := newTestHelper(t)
-		helper.ctx.EXPECT().Workdir().Return(p)
-
-		mgr, _, err := findLockFile(helper.ctx)
+		mgr, _, err := findLockFile(helper.ctx, p)
 		assert.NoError(t, err)
 		assert.Equal(t, mgr, pnpm)
 	})

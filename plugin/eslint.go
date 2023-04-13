@@ -11,10 +11,9 @@ import (
 	"go.uber.org/zap"
 )
 
-func runEslint(ctx cocov.Context, e Exec, nodePath string) (*cliOutput, error) {
-	wd := ctx.Workdir()
-	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
-	args := []string{"-f", "json-with-metadata", "--quiet", "."}
+func runEslint(ctx cocov.Context, e Exec, nodePath, repoPath string) (*cliOutput, error) {
+	eslintPath := filepath.Join(repoPath, "node_modules", ".bin", "eslint")
+	args := []string{"-f", "json-with-metadata", "--quiet", repoPath}
 
 	ctx.L().Info("Running eslint")
 	start := time.Now()

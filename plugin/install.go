@@ -1,7 +1,6 @@
 package plugin
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -31,18 +30,19 @@ type versionIndex struct {
 	versions []versionInfo
 }
 
-func installNode(ctx cocov.Context, exec Exec) (string, error) {
+func installNode(ctx cocov.Context, exec Exec, repoPath string) (string, error) {
 	rawPath := os.Getenv("PATH")
-	binPath := path.Join(nodePath, "bin")
+	repoNodePath := filepath.Join(nodePath, repoPath)
+	binPath := path.Join(repoNodePath, "bin")
 	np := fmt.Sprintf("%s:%s", binPath, rawPath)
 
-	version, err := checkDependencies(ctx)
+	version, err := checkDependencies(ctx, repoPath)
 	if err != nil {
 		return "", err
 	}
 
 	tck := toolCacheKey(version)
-	if ok := ctx.LoadToolCache(tck, nodePath); ok {
+	if ok := ctx.LoadToolCache(tck, repoNodePath); ok {
 		return np, nil
 	}
 
@@ -62,17 +62,17 @@ func installNode(ctx cocov.Context, exec Exec) (string, error) {
 	}
 
 	url := downloadURL(availableVersion)
-	zip, err := downloadNode(ctx, url)
+	zip, err := downloadNode(ctx, url, repoNodePath)
 	if err != nil {
 		return "", err
 	}
 
-	err = untar(ctx, exec, zip)
+	err = untar(ctx, exec, zip, repoNodePath)
 	if err != nil {
 		return "", err
 	}
 
-	ctx.StoreToolCache(tck, nodePath)
+	ctx.StoreToolCache(tck, repoNodePath)
 
 	return np, nil
 }
@@ -109,7 +109,7 @@ func findViableVersion(ctx cocov.Context, base string, c constraints, index *ver
 		v, err := semver.NewVersion(rawInfo.Version)
 		if err != nil {
 			ctx.L().Error("failed to build semver version using node index",
-				zap.String("version used", rawInfo.Version),
+				zap.String("index data", rawInfo.Version),
 				zap.Error(err),
 			)
 			return nil, err
@@ -123,12 +123,12 @@ func findViableVersion(ctx cocov.Context, base string, c constraints, index *ver
 	return nil, fmt.Errorf("no compatible versions found for %s", base)
 }
 
-func downloadNode(ctx cocov.Context, url string) (string, error) {
+func downloadNode(ctx cocov.Context, url string, repoNodePath string) (string, error) {
 	fileName := "node.tar.gz"
 
-	if err := os.Mkdir(nodePath, os.ModePerm); err != nil {
+	if err := os.Mkdir(repoNodePath, os.ModePerm); err != nil {
 		ctx.L().Error("error creating directory",
-			zap.String("path", nodePath),
+			zap.String("path", repoNodePath),
 			zap.Error(err),
 		)
 		return "", err
@@ -143,7 +143,7 @@ func downloadNode(ctx cocov.Context, url string) (string, error) {
 
 	defer resp.Close()
 
-	tarPath := filepath.Join(nodePath, fileName)
+	tarPath := filepath.Join(repoNodePath, fileName)
 	if err = resp.DownloadToFile(tarPath); err != nil {
 		ctx.L().Error("error writing downloaded node to file", zap.Error(err))
 		return "", err
@@ -152,8 +152,8 @@ func downloadNode(ctx cocov.Context, url string) (string, error) {
 	return tarPath, nil
 }
 
-func untar(ctx cocov.Context, e Exec, filePath string) error {
-	args := []string{"zxf", filePath, "--strip", "1", "-C", nodePath}
+func untar(ctx cocov.Context, e Exec, filePath string, repoNodePath string) error {
+	args := []string{"zxf", filePath, "--strip", "1", "-C", repoNodePath}
 	if _, err := e.Exec("tar", args, nil); err != nil {
 		ctx.L().Error("error extracting downloaded file", zap.Error(err))
 		return err

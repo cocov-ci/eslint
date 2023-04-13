@@ -38,24 +38,44 @@ func Run(ctx cocov.Context) error {
 
 func run(ctx cocov.Context) (*cliOutput, error) {
 	exec := defaultExec()
-	np, err := installNode(ctx, exec)
+	repos, err := findRepositories(ctx.Workdir())
 	if err != nil {
+		ctx.L().Error("Failed looking for repositories", zap.Error(err))
 		return nil, err
 	}
 
-	mgr, file, err := installPkgManager(ctx, exec, np)
-	if err != nil {
-		return nil, err
+	if len(repos) < 1 {
+		ctx.L().Error("Failed to found any package.json file")
+		return nil, errNoPkgJson
 	}
 
-	if err = restoreNodeModules(ctx, exec, mgr, file, np); err != nil {
-		return nil, err
+	out := newCliOutput()
+	for _, repo := range repos {
+		np, err := installNode(ctx, exec, repo)
+		if err != nil {
+			return nil, err
+		}
+
+		mgr, file, err := installPkgManager(ctx, exec, np, repo)
+		if err != nil {
+			return nil, err
+		}
+
+		if err = restoreNodeModules(ctx, exec, mgr, file, np, repo); err != nil {
+			return nil, err
+		}
+
+		repoOutput, err := runEslint(ctx, exec, np, repo)
+		if err != nil {
+			return nil, err
+		}
+		out.Results = append(out.Results, repoOutput.Results...)
+
+		for k, v := range out.Metadata.RulesMeta {
+			out.Metadata.RulesMeta[k] = v
+		}
+
 	}
 
-	output, err := runEslint(ctx, exec, np)
-	if err != nil {
-		return nil, err
-	}
-
-	return output, nil
+	return out, nil
 }

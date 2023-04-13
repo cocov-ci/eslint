@@ -14,13 +14,11 @@ func TestRunEslint(t *testing.T) {
 	wd := "workdir"
 	np := "node-path"
 	eslintPath := filepath.Join(wd, "node_modules", ".bin", "eslint")
-	args := []string{"-f", "json-with-metadata", "--quiet", "."}
+	args := []string{"-f", "json-with-metadata", "--quiet", wd}
 	opts := &cocov.ExecOpts{Env: map[string]string{"PATH": np}}
 
 	t.Run("Fails running eslint", func(t *testing.T) {
 		helper := newTestHelper(t)
-
-		helper.ctx.EXPECT().Workdir().Return(wd).AnyTimes()
 
 		stdOut := []byte("something on std out")
 		stdErr := []byte("something on std err")
@@ -30,14 +28,12 @@ func TestRunEslint(t *testing.T) {
 			Exec2(eslintPath, args, opts).
 			Return(stdOut, stdErr, boom)
 
-		_, err := runEslint(helper.ctx, helper.exec, np)
+		_, err := runEslint(helper.ctx, helper.exec, np, wd)
 		require.Error(t, err)
 	})
 
 	t.Run("Fails unmarshalling output", func(t *testing.T) {
 		helper := newTestHelper(t)
-
-		helper.ctx.EXPECT().Workdir().Return(wd)
 
 		stdOut := []byte("123")
 		stdErr := []byte("something went wrong")
@@ -46,7 +42,7 @@ func TestRunEslint(t *testing.T) {
 			Exec2(eslintPath, args, opts).
 			Return(stdOut, stdErr, nil)
 
-		_, err := runEslint(helper.ctx, helper.exec, np)
+		_, err := runEslint(helper.ctx, helper.exec, np, wd)
 		require.Error(t, err)
 		assert.ErrorContains(t, err, "json")
 	})
@@ -54,15 +50,13 @@ func TestRunEslint(t *testing.T) {
 	t.Run("Works as expected", func(t *testing.T) {
 		helper := newTestHelper(t)
 
-		helper.ctx.EXPECT().Workdir().Return(wd)
-
 		stdOut := validOutput(t)
 
 		helper.exec.EXPECT().
 			Exec2(eslintPath, args, opts).
 			Return(stdOut, nil, nil)
 
-		out, err := runEslint(helper.ctx, helper.exec, np)
+		out, err := runEslint(helper.ctx, helper.exec, np, wd)
 		require.NoError(t, err)
 		assert.NotNil(t, out)
 	})

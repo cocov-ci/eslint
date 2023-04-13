@@ -2,6 +2,7 @@ package plugin
 
 import (
 	"errors"
+	"path/filepath"
 	"testing"
 
 	"github.com/cocov-ci/go-plugin-kit/cocov"
@@ -11,16 +12,16 @@ import (
 func TestRestoreNodeModules(t *testing.T) {
 	wd := "workdir"
 	np := "node-path"
-	nodeModules := "node_modules"
+	nodeModules := filepath.Join(wd, "node_modules")
+	repoJsonFile := filepath.Join(wd, pkgJson)
 	lockFile := "yarn.lock"
+	lockFilePath := filepath.Join(wd, lockFile)
 
-	artifactKeys := []string{"package.json", lockFile}
+	artifactKeys := []string{repoJsonFile, lockFilePath}
 	manager := yarn
 	opts := &cocov.ExecOpts{Workdir: wd, Env: map[string]string{"PATH": np}}
 	t.Run("Fails to restore node modules", func(t *testing.T) {
 		helper := newTestHelper(t)
-
-		helper.ctx.EXPECT().Workdir().Return(wd)
 
 		helper.ctx.EXPECT().LoadArtifactCache(artifactKeys, nodeModules)
 
@@ -31,13 +32,12 @@ func TestRestoreNodeModules(t *testing.T) {
 			Exec2(manager, []string{"install"}, opts).
 			Return(stdOut, stdErr, boom)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np)
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np, wd)
 		require.Error(t, err)
 	})
 
 	t.Run("Works as expected", func(t *testing.T) {
 		helper := newTestHelper(t)
-		helper.ctx.EXPECT().Workdir().Return(wd)
 
 		helper.ctx.EXPECT().LoadArtifactCache(artifactKeys, nodeModules)
 
@@ -47,7 +47,7 @@ func TestRestoreNodeModules(t *testing.T) {
 
 		helper.ctx.EXPECT().StoreArtifactCache(artifactKeys, nodeModules)
 
-		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np)
+		err := restoreNodeModules(helper.ctx, helper.exec, manager, lockFile, np, wd)
 		require.NoError(t, err)
 	})
 }

@@ -33,7 +33,9 @@ type cliOutput struct {
 	Metadata metadata `json:"metadata"`
 }
 
-func newCliOutput() *cliOutput { return &cliOutput{} }
+func newCliOutput() *cliOutput {
+	return &cliOutput{Metadata: metadata{RulesMeta: map[string]metadataInfo{}}}
+}
 
 func (c *cliOutput) kindForRule(rule string) (cocov.IssueKind, bool) {
 	v, ok := c.Metadata.RulesMeta[rule]

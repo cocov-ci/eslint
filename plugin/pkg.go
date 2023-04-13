@@ -19,8 +19,8 @@ var managers = map[string]string{
 	"package-lock.json": npm,
 }
 
-func installPkgManager(ctx cocov.Context, e Exec, nodePath string) (string, string, error) {
-	mgr, file, err := findLockFile(ctx)
+func installPkgManager(ctx cocov.Context, e Exec, nodePath string, repoPath string) (string, string, error) {
+	mgr, file, err := findLockFile(ctx, repoPath)
 	if err != nil {
 		return "", "", err
 	}
@@ -37,11 +37,10 @@ func installPkgManager(ctx cocov.Context, e Exec, nodePath string) (string, stri
 	}
 
 	return mgr, file, nil
-
 }
 
-func findLockFile(ctx cocov.Context) (string, string, error) {
-	entries, err := os.ReadDir(ctx.Workdir())
+func findLockFile(ctx cocov.Context, repoPath string) (string, string, error) {
+	entries, err := os.ReadDir(repoPath)
 	if err != nil {
 		ctx.L().Error("error looking for lockfile",
 			zap.String("path", ctx.Workdir()),

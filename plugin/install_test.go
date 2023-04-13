@@ -2,8 +2,6 @@ package plugin
 
 import (
 	"net/http"
-	"os"
-	"path/filepath"
 	"testing"
 
 	"github.com/Masterminds/semver"

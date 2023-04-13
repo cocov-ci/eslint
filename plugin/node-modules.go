@@ -3,11 +3,14 @@ package plugin
 import (
 	"github.com/cocov-ci/go-plugin-kit/cocov"
 	"go.uber.org/zap"
+	"path/filepath"
 )
 
-func restoreNodeModules(ctx cocov.Context, e Exec, manager, file, nodePath string) error {
-	nodeModules := "node_modules"
-	artifactKeys := []string{pkgJson, file}
+func restoreNodeModules(ctx cocov.Context, e Exec, manager, file, nodePath, repoPath string) error {
+	file = filepath.Join(repoPath, file)
+	repoJsonFile := filepath.Join(repoPath, pkgJson)
+	nodeModules := filepath.Join(repoPath, "node_modules")
+	artifactKeys := []string{repoJsonFile, file}
 
 	if _, err := ctx.LoadArtifactCache(artifactKeys, nodeModules); err != nil {
 		ctx.L().Error("Error restoring cache artifacts", zap.Error(err))
@@ -15,7 +18,7 @@ func restoreNodeModules(ctx cocov.Context, e Exec, manager, file, nodePath strin
 	}
 
 	envs := map[string]string{"PATH": nodePath}
-	opts := &cocov.ExecOpts{Workdir: ctx.Workdir(), Env: envs}
+	opts := &cocov.ExecOpts{Workdir: repoPath, Env: envs}
 
 	ctx.L().Info("Restoring node modules", zap.String("package manager", manager))
 	stdOut, stdErr, err := e.Exec2(manager, []string{"install"}, opts)
