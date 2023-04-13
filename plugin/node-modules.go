@@ -1,9 +1,10 @@
 package plugin
 
 import (
+	"path/filepath"
+
 	"github.com/cocov-ci/go-plugin-kit/cocov"
 	"go.uber.org/zap"
-	"path/filepath"
 )
 
 func restoreNodeModules(ctx cocov.Context, e Exec, manager, file, nodePath, repoPath string) error {

@@ -2,11 +2,12 @@ package plugin
 
 import (
 	"encoding/json"
-	"github.com/cocov-ci/go-plugin-kit/cocov"
-	"go.uber.org/zap"
 	"io/fs"
 	"os"
 	"path/filepath"
+
+	"github.com/cocov-ci/go-plugin-kit/cocov"
+	"go.uber.org/zap"
 )
 
 func findRepositories(rootPath string) ([]string, error) {

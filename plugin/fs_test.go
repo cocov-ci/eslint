@@ -1,11 +1,12 @@
 package plugin
 
 import (
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
 	"os"
 	"path/filepath"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
 )
 
 func TestFindRepositories(t *testing.T) {
@@ -71,6 +72,7 @@ func TestCheckDependencies(t *testing.T) {
 		helper := newTestHelper(t)
 
 		version, err := checkDependencies(helper.ctx, fixtures)
+		assert.NoError(t, err)
 		assert.Equal(t, version, ver)
 	})
 
