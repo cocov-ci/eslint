@@ -18,7 +18,7 @@ RUN go mod download
 COPY . .
 RUN go build cmd/main.go
 
-FROM golang:latest
+FROM debian:latest
 
 COPY --from=builder /app/main /bin/eslint
 
