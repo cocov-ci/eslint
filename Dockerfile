@@ -20,12 +20,16 @@ RUN go build cmd/main.go
 
 FROM debian:latest
 
-COPY --from=builder /app/main /bin/eslint
+RUN apt update &&  \
+    apt install -y ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
 RUN adduser --home /cocov cocov
 
 RUN groupadd -f cocov
 RUN usermod -a -G cocov cocov
+
+COPY --from=builder /app/main /bin/eslint
 
 USER cocov
 
