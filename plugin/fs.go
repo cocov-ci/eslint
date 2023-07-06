@@ -2,12 +2,12 @@ package plugin
 
 import (
 	"encoding/json"
+	"github.com/cocov-ci/go-plugin-kit/cocov"
+	"go.uber.org/zap"
 	"io/fs"
 	"os"
 	"path/filepath"
-
-	"github.com/cocov-ci/go-plugin-kit/cocov"
-	"go.uber.org/zap"
+	"strings"
 )
 
 func findRepositories(rootPath string) ([]string, error) {
@@ -19,9 +19,11 @@ func findRepositories(rootPath string) ([]string, error) {
 			if err != nil {
 				return err
 			}
-			if d.IsDir() {
+
+			if d.IsDir() || strings.Contains(path, "node_modules") {
 				return nil
 			}
+
 			if d.Name() == "package.json" {
 				repos = append(repos, filepath.Dir(path))
 			}

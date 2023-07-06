@@ -13,10 +13,25 @@ func TestFindRepositories(t *testing.T) {
 	root := findRepositoryRoot(t)
 	path := filepath.Join(root, "plugin", "fixtures")
 
+	entries, err := os.ReadDir(path)
+	assert.NoError(t, err)
+
+	dirCount := 0
+	for _, e := range entries {
+		if e.IsDir() {
+			dirCount++
+		}
+	}
+
 	repos, err := findRepositories(path)
 	require.NoError(t, err)
 	assert.NotNil(t, repos)
-	assert.Len(t, repos, 3)
+
+	ignoredNodeModules := dirCount-len(repos) == 1
+	assert.Truef(t, ignoredNodeModules,
+		"Should ignore package.json files that are inside node_modules",
+	)
+
 }
 
 func TestCheckDependencies(t *testing.T) {
