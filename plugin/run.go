@@ -45,7 +45,7 @@ func run(ctx cocov.Context) (*cliOutput, error) {
 	}
 
 	if len(repos) < 1 {
-		ctx.L().Error("Failed to found any package.json file")
+		ctx.L().Error("Failed to find any package.json files")
 		return nil, errNoPkgJson
 	}
 
